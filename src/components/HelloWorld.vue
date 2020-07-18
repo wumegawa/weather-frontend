@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <h2>The message from weather backend: {{ message }}</h2>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -31,10 +32,26 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'HelloWorld',
+  data: () => {
+    return {
+      message: null
+    }
+  },
   props: {
     msg: String
+  },
+  async mounted() {
+    let baseUrl = process.env.VUE_APP_BACKEND_BASE_URL;
+    await axios.get(baseUrl + '/api/v1/').then(res => {
+      this.message = res.data.message;
+    }).catch(err => {
+      this.message = err.message;
+      console.log('err', err);
+    });
   }
 }
 </script>
